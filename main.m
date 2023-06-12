@@ -8,7 +8,7 @@ for t = 1:10000 %may be change!
         case 0
             ti = ti-1;
             wake = wake+1;
-            active();
+            received = active();
             if ti == 0
                 state = 1;
                 tds = T_ds;
