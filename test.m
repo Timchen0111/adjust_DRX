@@ -11,6 +11,5 @@ for t = 1:10000 %may be change!
             deep_sleep()
     end
 end
-
 result = [PS,D]; %PS: power saving vector, D: wake up delay
 
