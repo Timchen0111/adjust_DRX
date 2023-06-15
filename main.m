@@ -26,9 +26,15 @@ for t = 1:10000 %may be change!
                 Size = size(buffer);
                 if Size(1) > 1 %buffer includes more than 1 unit of data
                     %Calculate delay
-                    buffer(end,:) = []; %clear the buffer
+                    if buffer(end,2) == 32
+                        buffer(end,:) = []; %clear the buffer
+                    else
+                        remain = buffer(end,2); %in an unit time, 32bytes of data will be cleared!
+                        buffer(end,:) = []; %clear the buffer
+                        buffer(end,2) = remain;
+                    end
                 else
-                    %Calculate delay
+                    %Calculate delay           
                     buffer(1,:) = 0; %clear the buffer
                 end
             else
