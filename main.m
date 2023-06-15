@@ -2,13 +2,22 @@ function result = main(T_ds,T_dl,T_i,T_n) %Parameters
 state = 0;
 wake = 0;
 sleep = 0;
+buffer = 0; %This variable record the size of data stored in the buffer!
 %0: active 1: light sleep 2: deep sleep
 for t = 1:10000 %may be change!
     switch state
         case 0
-            ti = ti-1;
-            wake = wake+1;
-            received = active();
+            if buffer>0
+                ti = Ti;
+                if biffer > 32
+                    buffer = buffer-32;
+                else
+                    buffer = 0;
+                end
+            else
+                ti = ti-1;
+            end
+            wake = wake+1;           
             if ti == 0
                 state = 1;
                 tds = T_ds;
