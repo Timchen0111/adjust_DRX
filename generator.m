@@ -1,4 +1,4 @@
-function [buffer, num_to_receive] = generator(t_end, dt, rate)
+function buffer = generator(t_end, dt, rate)
 % Generate ETSI Bursty Packet Data Traffic
 
 % Parameters for simulation
