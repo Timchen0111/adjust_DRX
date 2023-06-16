@@ -4,7 +4,7 @@ wake = 0;
 sleep = 0;
 total_time = 0;
 
-buffer = zeros(1,2);  %This matrix record the size and generated time of data stored in the buffer!
+buffer = zeros(1,4);  %This matrix record the size and generated time of data stored in the buffer!
 
 %0: active 1: light sleep 2: deep sleep
 for t = 1:10000 %may be change!
@@ -13,10 +13,14 @@ for t = 1:10000 %may be change!
     if packet_generator > 0
         if buffer(1,2) == 0 %buffer is empty
             buffer(1,1) = total_time;
-            buffer(1,2) = packet_generator();
+            buffer(1,2) = packet_generator(1);
+            buffer(1,3) = packet_generator(2);
+            buffer(1,4) = packet_generator(3);
         else
             buffer(end+1,1) = total_time;
-            buffer(end+1,2) = packet_generator();
+            buffer(end+1,2) = packet_generator(1);
+            buffer(end+1,3) = packet_generator(2);
+            buffer(end+1,4) = packet_generator(3);
         end
     end
     switch state
