@@ -8,11 +8,15 @@
 ## how to run
  call generator.m at the beginning of the main simulation program (**not** in the simulation loop!!!)
 ### To be returned
- `buffer`: a $(n\times4)$ double, containing the following information:
+ `buffer`: an $(n\times4)$ double, containing the following information:
+ 
  | 1. | 2. | 3. | 4. |
  | time | size | packet call id | packet call end |
+ 
  `num_to_receive`: total number of data needed to be received from the buffer.
 ### Some parameters may need to be modified
  `t_end`: the end time of this simulation (sec)
+ 
  `dt`: unit of simulation time (sec)
+ 
  `rate`: transmission rate (byte/sec)
