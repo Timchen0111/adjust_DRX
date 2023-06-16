@@ -7,7 +7,7 @@
  `t_pareto_rnd.m`: the function returning a series of random numbers following i.i.d truncated Pareto random variables.
 
 ## how to run
- call generator.m at the beginning of the main simulation program (**not** in the simulation loop!!!)
+ call `generator.m` at the beginning of the main simulation program (**not** in the simulation loop!!!)
 ### To be returned
  `buffer`: an $(n\times4)$ double, containing the following information:
  
