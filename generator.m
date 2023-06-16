@@ -1,9 +1,10 @@
+function [buffer, num_to_receive] = generator(t_end, dt, rate)
 % Generate ETSI Bursty Packet Data Traffic
 
 % Parameters for simulation
-t_end = 10000; % time for the end of simulation (sec)
-dt = 10^(-3); % unit of simulation time (sec)
-rate = 32*10^3; % transmission rate (byte/sec)
+%t_end = 10000; % time for the end of simulation (sec)
+%dt = 10^(-3); % unit of simulation time (sec)
+%rate = 32*10^3; % transmission rate (byte/sec)
 rate_dt = rate * dt; % transmission in a dt (byte/dt)
 
 buffer = zeros(ceil(t_end/dt), 4); % [1. time | 2. size | 3. packet call id | 4. packet call end]
@@ -67,4 +68,6 @@ while t < t_end
     t = t + t_is - t_ipc;
 end
 buffer(num_to_receive+1:ceil(t_end/dt), :) = [];
+
+end
 
