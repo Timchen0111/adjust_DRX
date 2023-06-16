@@ -1,4 +1,4 @@
-function [result,result2,result3,result4,result5] = main(T_ds,T_dl,T_i,T_n) %Parameters
+function [result,result2,result3] = main(T_ds,T_dl,T_i,T_n) %Parameters
 tic
 state = 0;
 wake = 0;
@@ -46,11 +46,13 @@ for t = 1:t_end
     end
 
     if packet_generated(1) > 0
+
         if packet_generated(3) == 1
             packet_call_end = true;
         else
             packet_call_end = false;
         end
+
         if buffer(1,2) == 0 %buffer is empty
             buffer(1,1) = total_time;
             buffer(1,2) = packet_generated(1);
@@ -68,7 +70,7 @@ for t = 1:t_end
     %disp("index: "+index)
     %disp(t_now+": "+state)
     %disp(packet_generated)
-    if packet_generated(1) >0
+    if packet_generated(1) > 0
         result(end+1,1) = t_now;
         result(end,2) = state;
         result(end,3) = index;
@@ -79,12 +81,12 @@ for t = 1:t_end
     %if total_time>50
      %   error('end')
     %end
-    if packet_generated(1) ~= 0 && state ~= 0
-        if tt == 0
-            tt = t_now;
-            bb = buffer; 
-        end
-    end
+%     if packet_generated(1) ~= 0 && state ~= 0
+%         if tt == 0
+%             tt = t_now;
+%             bb = buffer; 
+%         end
+%     end
     %----------------------------------------------------------------------
     switch state
         case 0
@@ -126,12 +128,9 @@ for t = 1:t_end
 end
 
 PS = total_sleep/(wake+total_sleep);
-D = mean(delay);
+D = mean(delay)*dt;
 %result = [PS D]; %PS: power saving vector, D: wake up delay
-%result = 0;
-%result2 = 0;
+
 result2 = ETSI_generate_result;
-result3 = tt;
-result4 = buffer;
-result5 = [PS,D];
+result3 = [PS,D];
 toc
