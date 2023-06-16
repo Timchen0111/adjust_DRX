@@ -6,7 +6,6 @@ total_time = 0;
 buffer = zeros(1,4);  %This matrix record the size and generated time of data stored in the buffer!
 delay = []; %An array record every delay of packet calls
 packet_call_end = true;
-
 ti = T_i;
 %0: active 1: light sleep 2: deep sleep
 for t = 1:10000 
@@ -71,4 +70,3 @@ end
 PS = sleep/(wake+sleep);
 D = mean(delay);
 result = [PS,D]; %PS: power saving vector, D: wake up delay
-
