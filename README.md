@@ -10,7 +10,8 @@
 ### To be returned
  `buffer`: an $(n\times4)$ double, containing the following information:
  
- | 1. | 2. | 3. | 4. |
+ |  1.  |  2.  |       3.       |        4.       |
+ | ---- | ---- | -------------- | --------------- |
  | time | size | packet call id | packet call end |
  
  `num_to_receive`: total number of data needed to be received from the buffer.
