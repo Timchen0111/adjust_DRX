@@ -2,6 +2,7 @@ function result = main(T_ds,T_dl,T_i,T_n) %Parameters
 state = 0;
 wake = 0;
 sleep = 0;
+total_sleep = 0;
 total_time = 0;
 
 buffer = zeros(1,2);  %This matrix record the size and generated time of data stored in the buffer!
@@ -47,11 +48,13 @@ for t = 1:10000 %may be change!
                 tn = T_n;
             end
         case 1
-            [state, sleep] = light_sleep(sleep, T_ds, T_n, buffer)
+            [state, sleep] = light_sleep(sleep, T_ds, T_n, buffer);
+            total_sleep = total_sleep + 1;
         case 2
-            [state, sleep] = deep_sleep(sleep, T_dl, buffer)
+            [state, sleep] = deep_sleep(sleep, T_dl, buffer);
+            total_sleep = total_sleep + 1;
     end
 end
-PS = sleep/(wake+sleep);
+PS = total_sleep/(wake+total_sleep);
 result = [PS,D]; %PS: power saving vector, D: wake up delay
 
