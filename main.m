@@ -3,8 +3,8 @@ state = 0;
 wake = 0;
 sleep = 0;
 total_time = 0;
-
 buffer = zeros(1,4);  %This matrix record the size and generated time of data stored in the buffer!
+delay = []; %An array record every delay of packet calls
 
 %0: active 1: light sleep 2: deep sleep
 for t = 1:10000 %may be change!
@@ -28,17 +28,21 @@ for t = 1:10000 %may be change!
             if buffer(1,2) > 0 %buffer is not empty
                 ti = Ti;
                 Size = size(buffer);
-                if Size(1) > 1 %buffer includes more than 1 unit of data
-                    %Calculate delay
-                    if buffer(end,2) == 32
-                        buffer(end,:) = []; %clear the buffer
+                if Size(1) > 1 %buffer includes more than 1 unit of data                    
+                    if buffer(1,4) == 1
+                        delay(end+1) = total_time-buffer(1,1); %Calculate delay
+                    end
+                    if buffer(1,2) == 32
+                        buffer(1,:) = []; %clear the buffer
                     else
                         remain = buffer(end,2); %in an unit time, 32bytes of data will be cleared!
-                        buffer(end,:) = []; %clear the buffer
-                        buffer(end,2) = remain;
+                        buffer(1,:) = []; %clear the buffer
+                        buffer(1,2) = remain;
                     end
-                else
-                    %Calculate delay           
+                else      
+                    if buffer(end,4) == 1
+                        delay(end+1) = total_time-buffer(1,1); %Calculate delay
+                    end
                     buffer(1,:) = 0; %clear the buffer
                 end
             else
@@ -57,5 +61,6 @@ for t = 1:10000 %may be change!
     end
 end
 PS = sleep/(wake+sleep);
+D = mean(delay);
 result = [PS,D]; %PS: power saving vector, D: wake up delay
 
