@@ -2,8 +2,9 @@
  [Introduction to Wireless and Mobile Networking Final project]
 
 ## Synopsis
- generator.m: the main program to generate ESTI bursty packet data traffic.
- t_pareto_rnd.m: the function returning a series of random numbers following i.i.d truncated Pareto random variables.
+ `generator.m`: the main program to generate ESTI bursty packet data traffic.
+ 
+ `t_pareto_rnd.m`: the function returning a series of random numbers following i.i.d truncated Pareto random variables.
 
 ## how to run
  call generator.m at the beginning of the main simulation program (**not** in the simulation loop!!!)
