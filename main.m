@@ -5,12 +5,18 @@ sleep = 0;
 total_time = 0;
 buffer = zeros(1,4);  %This matrix record the size and generated time of data stored in the buffer!
 delay = []; %An array record every delay of packet calls
+packet_call_end = true;
 
 %0: active 1: light sleep 2: deep sleep
 for t = 1:10000 %may be change!
     %Put data into buffer
     total_time = total_time+1;
-    if packet_generator > 0
+    if packet_generator(1) > 0
+        if packet_generator(3) == 1
+            packet_call_end = true;
+        else
+            packet_call_end = false;
+        end
         if buffer(1,2) == 0 %buffer is empty
             buffer(1,1) = total_time;
             buffer(1,2) = packet_generator(1);
@@ -49,7 +55,7 @@ for t = 1:10000 %may be change!
                 ti = ti-1;
             end
             wake = wake+1;           
-            if ti == 0
+            if ti == 0 && packet_call_end == true %%The receiver cannot sleep until the current packet call is finished.
                 state = 1;
                 tds = T_ds;
                 tn = T_n;
