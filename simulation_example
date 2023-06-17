@@ -1,0 +1,55 @@
+%change ipc
+%ipc_arr = [20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100];
+arr = 5:5:80;
+Ups = zeros(1,length(arr));
+Lps = zeros(1,length(arr));
+Ud = zeros(1,length(arr));
+Ld = zeros(1,length(arr));
+
+parfor x = 1:length(arr)
+    ps = zeros(1,1);
+    d = zeros(1,1);
+    ps2 = zeros(1,1);
+    d2 = zeros(1,1);
+    ps3 = zeros(1,1);
+    d3 = zeros(1,1);
+    for i = 1:50
+        i
+        tn = arr(x);
+        result = main(2,10,2,tn,36000,1/30);
+        if ~isnan(result(2))
+            ps(i) = result(1);
+            d(i) = result(2);
+        end
+        result2 = main(2,20,2,tn,36000,1/30);
+        if ~isnan(result2(2))
+            ps2(i) = result2(1);
+            d2(i) = result2(2);
+        end
+        result3 = main(2,40,2,tn,36000,1/30);
+        if ~isnan(result3(2))
+            ps3(i) = result3(1);
+            d3(i) = result3(2);
+        end
+    end
+    psa(x) = mean(ps);
+    da(x) = mean(d);
+    psb(x) = mean(ps2);
+    db(x) = mean(d2);
+    psc(x) = mean(ps3);
+    dc(x) = mean(d3);
+end
+
+figure(1)
+plot(arr,psa,'--',arr,psb,'-*',arr,psc,'-o')
+title('Power saving vector')
+xlabel('tn')
+ylabel('PS')
+legend('tdl = 10', 'tdl = 20', 'tdl = 40');
+
+figure(2)
+plot(arr,da,'--',arr,db,'-*',arr,dc,'-o')
+title('Delay')
+xlabel('tn')
+ylabel('D')
+legend('tdl = 10', 'tdl = 20', 'tdl = 40');
