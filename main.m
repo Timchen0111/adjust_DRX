@@ -6,7 +6,7 @@ sleep = 0;
 total_time = 0;
 total_sleep = 0;
 tt = 0;
-
+clear = [];
 dt = 10^(-3); % unit of simulation time (sec)
 
 buffer = zeros(1,4);  %This matrix record the size and generated time of data stored in the buffer!
@@ -70,14 +70,14 @@ for t = 1:t_end
     %disp("index: "+index)
     %disp(t_now+": "+state)
     %disp(packet_generated)
-    if packet_generated(1) > 0
+    %if packet_generated(1) > 0 && buffer(1,2) ~= 0
         result(end+1,1) = t_now;
         result(end,2) = state;
         result(end,3) = index;
         result(end,4) = packet_generated(1);
         result(end,5) = packet_generated(2);
         result(end,6) = packet_generated(3);
-    end
+    %end
     %if total_time>50
      %   error('end')
     %end
@@ -91,18 +91,22 @@ for t = 1:t_end
     switch state
         case 0
             if buffer(1,2) > 0 %buffer is not empty
-                ti = T_i;
+                ti = T_i/dt;
                 Size = size(buffer);
                 if Size(1) > 1 %buffer includes more than 1 unit of data                    
                     if buffer(1,4) == 1
                         delay(end+1) = total_time-buffer(1,1); %Calculate delay
                     end
                     if buffer(1,2) == 32
+                        clear(end+1,:) = buffer(1,:);
+                        clear(end,1) = total_time*dt;
                         buffer(1,:) = []; %clear the buffer
                     else
                         remain = buffer(end,2); %in an unit time, 32bytes of data will be cleared!
+                        clear(end+1,:) = buffer(1,:);
+                        clear(end,1) = total_time*dt;
                         buffer(1,:) = []; %clear the buffer
-                        buffer(1,2) = remain;
+                        buffer(1,2) = buffer(1,2)-(32-remain);
                     end
                 else      
                     if buffer(end,4) == 1
@@ -130,7 +134,8 @@ end
 PS = total_sleep/(wake+total_sleep);
 D = mean(delay)*dt;
 %result = [PS D]; %PS: power saving vector, D: wake up delay
-
+delay
 result2 = ETSI_generate_result;
 result3 = [PS,D];
+%clear
 toc
