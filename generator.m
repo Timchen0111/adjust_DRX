@@ -34,6 +34,7 @@ packet_size_beta = 1.1; % shape parameter
 %S_d = t_pareto_rnd(packet_size_low, packet_size_high, packet_size_beta, 1); % packet size (byte)
 
 t = 0;
+
 while t < t_end
     % Session start
     N_pc = 1 + geornd(1/mu_pc); % number of packet call in this session
@@ -48,7 +49,7 @@ while t < t_end
                 to_buffer = [t rate_dt pc_id 0]; 
                 % buffer = [buffer; to_buffer]; % DON'T do this again
                 buffer(num_to_receive,:) = to_buffer;
-                t = t + dt;
+                t = t + dt;       
             end
             num_to_receive = num_to_receive + 1;
             remain_part = S_d(p_id) - (num_of_sending(p_id) - 1) * rate_dt;
@@ -56,7 +57,7 @@ while t < t_end
             buffer(num_to_receive,:) = to_buffer;
             t = t + dt;
             t_ip = ceil(exprnd(1/lambda_ip) / dt) * dt; % inter-packet idle time (sec)
-            t = t + t_ip;
+            t = t + t_ip;     
         end % packet end
         t_ipc = ceil(exprnd(1/lambda_ipc) / dt) * dt; % inter-packet call idle time (sec)
         t = t + t_ipc - t_ip;

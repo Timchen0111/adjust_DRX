@@ -1,10 +1,11 @@
-function [result] = main(T_ds,T_dl,T_i,T_n,t_end) %Parameters
+function result = main(T_ds,T_dl,T_i,T_n,t_end) %Parameters
 %tic
 state = 0;
 wake = 0;
 sleep = 0;
 total_time = 0;
 total_sleep = 0;
+on = 0;
 
 dt = 10^(-3); % unit of simulation time (sec)
 
@@ -16,7 +17,8 @@ T_dl = T_dl/dt;
 T_ds = T_ds/dt;
 T_n = T_n/dt;
 %result = [];
-rate = 32*10^3;
+rate = 4*10^3;
+tau = 0.12;
 
 ETSI_generate_result = generator(t_end, dt, rate); %In this simulation, the ETSI Bursty Packet Data Traffic is generated in advanced!
 index = 1; %This variable record the row in the generator we is using now.
@@ -30,12 +32,11 @@ for t = 1:t_end
     %ETSI_generate_result(index,1)
     %t_now
     buffer_size = size(ETSI_generate_result);
+    
     if index <= buffer_size(1)
-        %disp(index)
-        %disp('YOU ARE MONKEY')
-        if abs(ETSI_generate_result(index,1)-t_now) < 1e-4
-            %disp(index)
-            %disp('GO')
+        %ETSI_generate_result(index,1)
+        %t_now
+        if abs(ETSI_generate_result(index,1)-t_now) <1e-4
             packet_generated = ETSI_generate_result(index,:);
             packet_generated(1) = [];
             index = index+1;
@@ -43,7 +44,6 @@ for t = 1:t_end
             packet_generated = [0 0 0];
         end
     else
-        %disp('end!')
         packet_generated = [0 0 0];
     end
 
@@ -135,11 +135,19 @@ for t = 1:t_end
                 state = 1;
             end
         case 1
-            [state, sleep] = light_sleep(sleep, T_ds, T_n, buffer);
-            total_sleep = total_sleep + 1;
+            [state, sleep, on] = light_sleep(sleep, T_ds, T_n, buffer);
+            if on == false
+                total_sleep = total_sleep + 1;
+            else
+                wake = wake+1;
+            end
         case 2
-            [state, sleep] = deep_sleep(sleep, T_dl, buffer);
-            total_sleep = total_sleep + 1;
+            [state, sleep, on] = deep_sleep(sleep, T_dl, buffer);
+            if on == false
+                total_sleep = total_sleep + 1;
+            else
+                wake = wake+1;
+            end
     end
     t_now = t_now+dt;
 end
@@ -149,3 +157,5 @@ delay(delay == 0) = [];
 
 D = mean(delay)*dt;
 result = [PS D]; %PS: power saving vector, D: wake up delay
+
+
