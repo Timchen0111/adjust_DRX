@@ -3,7 +3,7 @@ function [ret_state,ret_sleep_time,on] = light_sleep(sleep_time, T_ds, T_n, buff
 %   Detailed explanation goes here
     on = false;
     sleep_time = sleep_time + 1;
-    if (mod(sleep_time, T_ds) < 120)
+    if (mod(sleep_time, (T_ds+120)) > T_ds)
         on = true;
         if (buffer(1, 2) > 0)
             ret_state = 0;
