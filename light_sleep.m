@@ -3,8 +3,10 @@ function [ret_state,ret_sleep_time] = light_sleep(sleep_time, T_ds, T_n, buffer)
 %   Detailed explanation goes here
     sleep_time = sleep_time + 1;
     if (mod(sleep_time, T_ds) == 0)
+        %disp("check!")
+        %disp(buffer(1,:))
         if (buffer(1, 2) > 0)
-            %disp(buffer)
+            %disp("find!")
             ret_state = 0;
             ret_sleep_time = 0;
             return

@@ -1,5 +1,5 @@
-function [result,result2,result3] = main(T_ds,T_dl,T_i,T_n) %Parameters
-tic
+function result = main(T_ds,T_dl,T_i,T_n) %Parameters
+%tic
 state = 0;
 wake = 0;
 sleep = 0;
@@ -33,7 +33,7 @@ for t = 1:t_end
     %ETSI_generate_result(index,1)
     %t_now
     buffer_size = size(ETSI_generate_result);
-    if index < buffer_size(1)
+    if index <= buffer_size(1)
         if abs(ETSI_generate_result(index,1)-t_now)< 1e-7
             packet_generated = ETSI_generate_result(index,:);
             packet_generated(1) = [];
@@ -70,13 +70,13 @@ for t = 1:t_end
     %disp("index: "+index)
     %disp(t_now+": "+state)
     %disp(packet_generated)
-    %if packet_generated(1) > 0 && buffer(1,2) ~= 0
-        result(end+1,1) = t_now;
-        result(end,2) = state;
-        result(end,3) = index;
-        result(end,4) = packet_generated(1);
-        result(end,5) = packet_generated(2);
-        result(end,6) = packet_generated(3);
+    %if state == 0
+        %result(end+1,1) = t_now;
+        %result(end,2) = state;
+        %result(end,3) = index;
+        %result(end,4) = packet_generated(1);
+        %result(end,5) = packet_generated(2);
+        %result(end,6) = packet_generated(3);
     %end
     %if total_time>50
      %   error('end')
@@ -93,20 +93,36 @@ for t = 1:t_end
             if buffer(1,2) > 0 %buffer is not empty
                 ti = T_i/dt;
                 Size = size(buffer);
-                if Size(1) > 1 %buffer includes more than 1 unit of data                    
-                    if buffer(1,4) == 1
-                        delay(end+1) = total_time-buffer(1,1); %Calculate delay
-                    end
+                if Size(1) > 1 %buffer includes more than 1 unit of data                                        
                     if buffer(1,2) == 32
                         clear(end+1,:) = buffer(1,:);
                         clear(end,1) = total_time*dt;
+                        if buffer(1,4) == 1
+                            delay(end+1) = total_time-buffer(1,1); %Calculate delay
+                        end
                         buffer(1,:) = []; %clear the buffer
                     else
-                        remain = buffer(end,2); %in an unit time, 32bytes of data will be cleared!
+                        remain = buffer(1,2); %in an unit time, 32bytes of data will be cleared!
                         clear(end+1,:) = buffer(1,:);
                         clear(end,1) = total_time*dt;
                         buffer(1,:) = []; %clear the buffer
-                        buffer(1,2) = buffer(1,2)-(32-remain);
+                        buffer(1,2) = buffer(1,2)-(32-remain);   
+                        sb = size(buffer);
+                        while buffer(1,2) <= 0 && sb(1) > 1
+                            if buffer(1,4) == 1
+                                delay(end+1) = total_time-buffer(1,1); %Calculate delay
+                            end
+                            remain = buffer(1,2);
+                            buffer(1,:) = [];
+                            buffer(1,2) = buffer(1,2)+remain;
+                            sb = size(buffer);
+                        end
+                        if buffer(1,2) <= 0 && sb(1) == 1
+                            if buffer(1,4) == 1
+                                delay(end+1) = total_time-buffer(1,1); %Calculate delay
+                            end
+                            buffer(1,:) = [0 0 0 0];
+                        end
                     end
                 else      
                     if buffer(end,4) == 1
@@ -124,9 +140,15 @@ for t = 1:t_end
         case 1
             [state, sleep] = light_sleep(sleep, T_ds, T_n, buffer);
             total_sleep = total_sleep + 1;
+%             if state == 0
+%                 disp('wake up!')
+%             end
         case 2
             [state, sleep] = deep_sleep(sleep, T_dl, buffer);
             total_sleep = total_sleep + 1;
+%             if state == 0
+%                 disp('wake up!')
+%             end
     end
     t_now = t_now+dt;
 end
@@ -134,8 +156,9 @@ end
 PS = total_sleep/(wake+total_sleep);
 D = mean(delay)*dt;
 %result = [PS D]; %PS: power saving vector, D: wake up delay
-delay
-result2 = ETSI_generate_result;
-result3 = [PS,D];
+%delay
+%result2 = ETSI_generate_result;
+%result3 = [PS,D];
 %clear
-toc
+result = [PS,D];
+%toc
