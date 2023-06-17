@@ -11,7 +11,7 @@ buffer = zeros(ceil(t_end/dt), 4); % [1. time | 2. size | 3. packet call id | 4.
 num_to_receive = 0;
 
 % Parameters for idle time
-lambda_is = 1/2000; %(1/sec)
+lambda_is = 1/2000; %(1/sec) %temp change
 lambda_ipc = 1/30; %(1/sec)
 lambda_ip = 10; %(1/sec)
 

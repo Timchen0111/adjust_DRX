@@ -1,12 +1,11 @@
-function result = main(T_ds,T_dl,T_i,T_n) %Parameters
+function [result] = main(T_ds,T_dl,T_i,T_n,t_end) %Parameters
 %tic
 state = 0;
 wake = 0;
 sleep = 0;
 total_time = 0;
 total_sleep = 0;
-tt = 0;
-clear = [];
+
 dt = 10^(-3); % unit of simulation time (sec)
 
 buffer = zeros(1,4);  %This matrix record the size and generated time of data stored in the buffer!
@@ -16,9 +15,7 @@ ti = T_i/dt;
 T_dl = T_dl/dt;
 T_ds = T_ds/dt;
 T_n = T_n/dt;
-
-result = zeros(1,6);%temp!
-t_end = 100;
+%result = [];
 rate = 32*10^3;
 
 ETSI_generate_result = generator(t_end, dt, rate); %In this simulation, the ETSI Bursty Packet Data Traffic is generated in advanced!
@@ -34,7 +31,11 @@ for t = 1:t_end
     %t_now
     buffer_size = size(ETSI_generate_result);
     if index <= buffer_size(1)
-        if abs(ETSI_generate_result(index,1)-t_now)< 1e-7
+        %disp(index)
+        %disp('YOU ARE MONKEY')
+        if abs(ETSI_generate_result(index,1)-t_now) < 1e-4
+            %disp(index)
+            %disp('GO')
             packet_generated = ETSI_generate_result(index,:);
             packet_generated(1) = [];
             index = index+1;
@@ -42,11 +43,11 @@ for t = 1:t_end
             packet_generated = [0 0 0];
         end
     else
+        %disp('end!')
         packet_generated = [0 0 0];
     end
 
     if packet_generated(1) > 0
-
         if packet_generated(3) == 1
             packet_call_end = true;
         else
@@ -70,14 +71,14 @@ for t = 1:t_end
     %disp("index: "+index)
     %disp(t_now+": "+state)
     %disp(packet_generated)
-    %if state == 0
-        %result(end+1,1) = t_now;
-        %result(end,2) = state;
-        %result(end,3) = index;
-        %result(end,4) = packet_generated(1);
-        %result(end,5) = packet_generated(2);
-        %result(end,6) = packet_generated(3);
-    %end
+%     if state == 0 
+%         result(end+1,1) = t_now;
+%         result(end,2) = state;
+%         result(end,3) = index;
+%         result(end,4) = packet_generated(1);
+%         result(end,5) = packet_generated(2);
+%         result(end,6) = packet_generated(3);
+%     end
     %if total_time>50
      %   error('end')
     %end
@@ -94,17 +95,13 @@ for t = 1:t_end
                 ti = T_i/dt;
                 Size = size(buffer);
                 if Size(1) > 1 %buffer includes more than 1 unit of data                                        
-                    if buffer(1,2) == 32
-                        clear(end+1,:) = buffer(1,:);
-                        clear(end,1) = total_time*dt;
+                    if buffer(1,2) > 32 %temp
                         if buffer(1,4) == 1
                             delay(end+1) = total_time-buffer(1,1); %Calculate delay
                         end
                         buffer(1,:) = []; %clear the buffer
                     else
                         remain = buffer(1,2); %in an unit time, 32bytes of data will be cleared!
-                        clear(end+1,:) = buffer(1,:);
-                        clear(end,1) = total_time*dt;
                         buffer(1,:) = []; %clear the buffer
                         buffer(1,2) = buffer(1,2)-(32-remain);   
                         sb = size(buffer);
@@ -140,25 +137,15 @@ for t = 1:t_end
         case 1
             [state, sleep] = light_sleep(sleep, T_ds, T_n, buffer);
             total_sleep = total_sleep + 1;
-%             if state == 0
-%                 disp('wake up!')
-%             end
         case 2
             [state, sleep] = deep_sleep(sleep, T_dl, buffer);
             total_sleep = total_sleep + 1;
-%             if state == 0
-%                 disp('wake up!')
-%             end
     end
     t_now = t_now+dt;
 end
 
 PS = total_sleep/(wake+total_sleep);
+delay(delay == 0) = [];
+
 D = mean(delay)*dt;
-%result = [PS D]; %PS: power saving vector, D: wake up delay
-%delay
-%result2 = ETSI_generate_result;
-%result3 = [PS,D];
-%clear
-result = [PS,D];
-%toc
+result = [PS D]; %PS: power saving vector, D: wake up delay

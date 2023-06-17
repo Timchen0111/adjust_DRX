@@ -3,8 +3,7 @@ function [ret_state, ret_sleep_time] = deep_sleep(sleep_time, T_dl, buffer)
 %   Detailed explanation goes here
     sleep_time = sleep_time + 1;
     if (mod(sleep_time, T_dl) == 0)
-        %disp("check!")       
-        %disp(buffer(1,:))
+        %disp("check!")               
         if (buffer(1, 2) > 0)
             %disp("find!")
             ret_state = 0;
