@@ -1,11 +1,11 @@
-function result = main(T_ds,T_dl,T_i,T_n,t_end) %Parameters
+function result = main(T_ds,T_dl,T_i,T_n,t_end,ipc) %Parameters
 %tic
 state = 0;
 wake = 0;
 sleep = 0;
 total_time = 0;
 total_sleep = 0;
-on = 0;
+on = false;
 
 dt = 10^(-3); % unit of simulation time (sec)
 
@@ -20,7 +20,7 @@ T_n = T_n/dt;
 rate = 4*10^3;
 tau = 0.12;
 
-ETSI_generate_result = generator(t_end, dt, rate); %In this simulation, the ETSI Bursty Packet Data Traffic is generated in advanced!
+ETSI_generate_result = generator(t_end, dt, rate, ipc); %In this simulation, the ETSI Bursty Packet Data Traffic is generated in advanced!
 index = 1; %This variable record the row in the generator we is using now.
 t_now = 0; %This variable record the simulation time.
 t_end = t_end/dt;
@@ -131,7 +131,7 @@ for t = 1:t_end
                 ti = ti-1;
             end
             wake = wake+1;           
-            if ti == 0 && packet_call_end == true %%The receiver cannot sleep until the current packet call is finished.
+            if ti <= 0 && packet_call_end == true %%The receiver cannot sleep until the current packet call is finished.
                 state = 1;
             end
         case 1

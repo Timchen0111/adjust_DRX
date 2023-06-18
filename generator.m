@@ -1,4 +1,4 @@
-function buffer = generator(t_end, dt, rate)
+function buffer = generator(t_end, dt, rate, lambda_ipc)
 % Generate ETSI Bursty Packet Data Traffic
 
 % Parameters for simulation
@@ -12,7 +12,7 @@ num_to_receive = 0;
 
 % Parameters for idle time
 lambda_is = 1/2000; %(1/sec) %temp change
-lambda_ipc = 1/30; %(1/sec)
+%lambda_ipc = 1/30; %(1/sec)
 lambda_ip = 10; %(1/sec)
 
 % Parameters for number
