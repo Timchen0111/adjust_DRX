@@ -17,8 +17,8 @@ T_dl = T_dl/dt;
 T_ds = T_ds/dt;
 T_n = T_n/dt;
 %result = [];
-rate = 4*10^3;
-tau = 0.12;
+rate = 2048*10^3;
+tau = 0.1;
 
 ETSI_generate_result = generator(t_end, dt, rate, ipc); %In this simulation, the ETSI Bursty Packet Data Traffic is generated in advanced!
 index = 1; %This variable record the row in the generator we is using now.
@@ -95,7 +95,7 @@ for t = 1:t_end
                 ti = T_i/dt;
                 Size = size(buffer);
                 if Size(1) > 1 %buffer includes more than 1 unit of data                                        
-                    if buffer(1,2) > 32 %temp
+                    if buffer(1,2) < 2048 %temp
                         if buffer(1,4) == 1
                             delay(end+1) = total_time-buffer(1,1); %Calculate delay
                         end
@@ -103,7 +103,7 @@ for t = 1:t_end
                     else
                         remain = buffer(1,2); %in an unit time, 32bytes of data will be cleared!
                         buffer(1,:) = []; %clear the buffer
-                        buffer(1,2) = buffer(1,2)-(32-remain);   
+                        buffer(1,2) = buffer(1,2)-(2048-remain);   
                         sb = size(buffer);
                         while buffer(1,2) <= 0 && sb(1) > 1
                             if buffer(1,4) == 1
@@ -154,7 +154,6 @@ end
 
 PS = total_sleep/(wake+total_sleep);
 delay(delay == 0) = [];
-
 D = mean(delay)*dt;
 result = [PS D]; %PS: power saving vector, D: wake up delay
 
